@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Counter App</title>
+  </head>
+  <body>
+    <div id="counter">
+      <p>Count: <span id="count">0</span></p>
+      <button id="increment">+</button>
+      <button id="decrement">-</button>
+    </div>
+
+    <script>
+      // Model
+      const counterModel = {
+        count: 0,
+        increment() {
+          this.count++;
+          this.notify();
+        },
+        decrement() {
+          this.count--;
+          this.notify();
+        },
+        addObserver(observer) {
+          this.observers.push(observer);
+        },
+        notify() {
+          this.observers.forEach((observer) => {
+            console.log(observer);
+            console.log(this);
+            return observer.update(this);
+          });
+        },
+        observers: [],
+      };
+
+      // View
+      const counterView = {
+        init() {
+          this.countElem = document.querySelector("#count");
+          this.incrementButton = document.querySelector("#increment");
+          this.decrementButton = document.querySelector("#decrement");
+          this.incrementButton.addEventListener("click", () => {
+            counterController.increment();
+          });
+          this.decrementButton.addEventListener("click", () => {
+            counterController.decrement();
+          });
+        },
+        update(model) {
+          this.countElem.innerText = model.count;
+        },
+      };
+
+      // Controller
+      const counterController = {
+        init() {
+          counterModel.addObserver(this);
+          counterView.init();
+        },
+        increment() {
+          counterModel.increment();
+        },
+        decrement() {
+          counterModel.decrement();
+        },
+        update(model) {
+          counterView.update(model);
+        },
+      };
+
+      // Initialize the app
+      counterController.init();
+    </script>
+  </body>
+</html>
